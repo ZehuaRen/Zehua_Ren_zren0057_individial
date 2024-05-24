@@ -13,6 +13,41 @@ let randInt = (a, b) => (Math.floor(Math.random() * (b - a) + a));
 var sound,fft,amp;
 var spectrum;
 
+let rads=[];
+let colors=["#485696","#e7e7e7","#f9c784","#007a1e","#000c00"]
+
+let go=0
+let size=0
+
+class rad{
+  constructor(r){
+    this.rotation=r
+    this.y=0;
+    this.length=5
+    this.color=random(colors);
+  }
+  
+  update(){
+    this.y+=2
+    if(this.y>width+height/2){
+      let index = rads.indexOf(this);
+      rads.splice(index, 1);
+    }
+    
+  }
+  display(){
+    push();
+    translate(width/2, height/2);
+    rotate(this.rotation);
+    stroke(this.color);
+    strokeWeight(20 - 10 * sin(size));
+    strokeCap(PROJECT)
+    line(0, this.y+this.length, 0, this.y)
+    pop();
+    
+  }
+}
+
 function preload() {
   sound = loadSound('ConsiderMyLove.mp3');
   
@@ -39,13 +74,33 @@ function setup() {
 function draw() {
   // Drawing background color
   background(backCol);
-  // No Stroke
+  
+  if(sin(go)<0.018 && sin(go)>-0.18){
+   for(let i=0; i<360; i+=10){
+    rads.push(new rad(i))
+   }
+  }
+  
+  for(let rad of rads){
+    rad.update();
+    rad.display();
+  }
+
+  go +=10
+  size+=3
+  noStroke()
+  fill(0, 50)
+  ellipse (width/2+3, height/2+3, 103)
+  fill(255)
+  ellipse (width/2, height/2, 100)
   noStroke()
   randomSeed(2)
+  spectrum = fft.analyze();
+  
   // Iterate over all the cubes
-  for (let recta of rectangles) {
+  for (let rect of rectangles) {
     // Drawing small squares
-    drawRectangle(recta.i * u, recta.j * u, recta.si * u, recta.sj * u, recta.insideCol);
+    drawRectangle(rect.i * u, rect.j * u, rect.si * u + map(spectrum[0], 0, 300, -100, 100), rect.sj * u, rect.insideCol);
   }
 }
 
@@ -175,30 +230,7 @@ function drawRectangle(x0, y0, si, sj, insideCol) {
     rect(x, y0 + sj, v, v);
   }
 
-  // Vertical Loop Drawing Rectangles
-  for (let y = y0 + v; y < y0 + sj - v / 2; y += v) {
-    // Select a new color that is different from the previous one
-    do {
-      newCol = random(palette);
-    } while (newCol == prevCol1)
-    // Use the primary color with a 2/3 probability
-    if (Math.random() < 2 / 3) newCol = mainCol;
-    // Fill colors and draw rectangles
-    fill(newCol);
-    prevCol1 = newCol;
-    rect(x0, y, v, v);
 
-    // Select a new color that is different from the previous one
-    do {
-      newCol = random(palette);
-    } while (newCol == prevCol2)
-    // Use the primary color with a 2/3 probability
-    if (Math.random() < 2 / 3) newCol = mainCol;
-    // Fill colors and draw rectangles
-    fill(newCol);
-    prevCol2 = newCol;
-    rect(x0 + si, y, v, v);
-  }
 
 
   // Vertical Loop Drawing Rectangles
