@@ -21,11 +21,15 @@ function preload() {
 // Setting the canvas size
 function setup() {
   createCanvas(500, 500);
- noLoop()
+  angleMode(DEGREES)
   // Calculate the width of each small square
   u = width / N;
   // Calculate the boundary of each small square
   v = u / 4;
+
+  fft = new p5.FFT(0.8,512);  
+  amp = new p5.Amplitude(0.3);
+	amp.setInput(sound);
  
   createComposition();
 
