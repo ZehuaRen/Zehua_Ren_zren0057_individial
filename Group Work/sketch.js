@@ -258,3 +258,13 @@ function drawRectangle(x0, y0, si, sj, insideCol) {
     rect(x0 + si, y, v, v);
   }
 }
+
+function mousePressed() {
+	if (!sound.isPlaying()) {
+		sound.play(0);
+    //Set the volume of music
+		sound.setVolume(1);
+	} else {
+		sound.pause();
+	}
+}
