@@ -9,6 +9,15 @@ let rectangles = [];
 
 let randInt = (a, b) => (Math.floor(Math.random() * (b - a) + a));
 
+// Set the canvas size
+var sound,fft,amp;
+var spectrum;
+
+function preload() {
+  sound = loadSound('ConsiderMyLove.mp3');
+  
+}
+
 // Setting the canvas size
 function setup() {
   createCanvas(500, 500);
